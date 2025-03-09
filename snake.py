@@ -17,7 +17,7 @@ def draw_grid(w, rows, surface):
         pygame.draw.line(surface, (255, 255, 255), (0, y), (w, y))
 
 def draw_window(surface):
-    surface.fill((100, 0, 100))
+    surface.fill((120, 30, 120))
     draw_grid(size, rows, surface)
     pygame.display.update()
 
