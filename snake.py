@@ -5,7 +5,7 @@ import tkinter as tk;
 from tkinter import messagebox;
 
 
-class cube(object):
+class Cube(object):
     rows = 20
     def __init__(self, start, dirnx=1, dirny=0, color=(255, 0, 0)):
         self.pos = start
@@ -34,7 +34,7 @@ class snake(object):
     turns = {}
     def __init__(self, color, pos):
         self.color = color
-        self.head = cube(pos)
+        self.head = Cube(pos)
         self.body.append(self.head)
         self.dirnx = 0
         self.dirny = 1
@@ -83,7 +83,20 @@ class snake(object):
     def reset(self, pos):
         pass
     def addCube(self):
-        pass
+        tail = self.body[-1]
+        dx, dy = tail.dirnx, tail.dirny
+        if dx == 1 and dy == 0:
+            self.body.append(Cube((tail.pos[0] - 1, tail.pos[1])))
+        elif dx == -1 and dy == 0:
+            self.body.append(Cube((tail.pos[0] + 1, tail.pos[1])))
+        elif dx == 0 and dy == 1:
+            self.body.append(Cube((tail.pos[0], tail.pos[1] - 1)))
+        elif dx == 0 and dy == -1:
+            self.body.append(Cube((tail.pos[0], tail.pos[1] + 1)))
+
+        self.body[-1].dirnx = dx
+        self.body[-1].dirny = dy
+
     def draw(self, surface):
         for i, c in enumerate(self.body):
             if i == 0:
@@ -105,16 +118,31 @@ def draw_grid(w, rows, surface):
 
 def draw_window(surface):
     surface.fill((120, 30, 120))
+    s.draw(surface)
+    blanket.draw(surface)
     draw_grid(size, rows, surface)
     pygame.display.update()
 
+def random_blanket(snake):
+    positions = snake.body
+
+    while True:
+        x = random.randrange(rows)
+        y = random.randrange(rows)
+        if len(list(filter(lambda z: z.pos == (x,y), positions))) > 0:
+            continue
+        else:
+            break
+    return (x, y)
+
 def main():
-    global size, rows, s
+    global size, rows, s, blanket
     size = 500
     rows = 20
     window = pygame.display.set_mode((size, size))
 
     s = snake((0, 0, 0), (10, 10))
+    blanket = Cube(random_blanket(s), color=(0, 255, 0))
 
     flag = True
     clock = pygame.time.Clock()
@@ -124,6 +152,9 @@ def main():
         pygame.time.delay(50)
         clock.tick(10)
         s.move()
+        if s.body[0].pos == blanket.pos:
+            s.addCube()
+            blanket = Cube(random_blanket(s), color=(0, 255, 0))
         draw_window(window)
 
 main()
