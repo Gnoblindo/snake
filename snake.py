@@ -94,7 +94,7 @@ class snake(object):
     def game_over(self, przyczyna):
         root = tk.Tk()
         root.withdraw()
-        messagebox.showinfo("Fulgrim poszedł spać", "Fulgrim poszedł spać " + przyczyna + "\nIlość kocyków: " + str(len(self.body)))
+        messagebox.showinfo("Fulgrim poszedł spać", "Fulgrim poszedł spać " + przyczyna + "\nZdobyte kocyki: " + str(len(self.body)-1))
         root.destroy()
         reset_game()
 
