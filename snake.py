@@ -71,17 +71,41 @@ class snake(object):
                     self.turns.pop(p)
             else:
                 if c.dirnx == -1 and c.pos[0] <= 0:
-                    c.pos = (c.rows - 1, c.pos[1])
+                    self.game_over("ze zmęczenia")
+                    return False
                 elif c.dirnx == 1 and c.pos[0] >= c.rows - 1:
-                    c.pos = (0, c.pos[1])
+                    self.game_over("ze zmęczenia")
+                    return False
                 elif c.dirny == 1 and c.pos[1] >= c.rows - 1:
-                    c.pos = (c.pos[0], 0)
+                    self.game_over("ze zmęczenia")
+                    return False
                 elif c.dirny == -1 and c.pos[1] <= 0:
-                    c.pos = (c.pos[0], c.rows - 1)
+                    self.game_over("ze zmęczenia")
+                    return False
                 else:
                     c.move(c.dirnx, c.dirny)
+
+        if self.head.pos in [c.pos for c in self.body[1:]]:
+            self.game_over("przez podziwianie się")
+            return False
+
+        return True
+        
+    def game_over(self, przyczyna):
+        root = tk.Tk()
+        root.withdraw()
+        messagebox.showinfo("Fulgrim poszedł spać", "Fulgrim poszedł spać " + przyczyna + "\nIlość kocyków: " + str(len(self.body)))
+        root.destroy()
+        reset_game()
+
     def reset(self, pos):
-        pass
+        self.body = []
+        self.turns = {}
+        self.head = Cube(pos)
+        self.body.append(self.head)
+        self.dirnx = 0
+        self.dirny = 1
+
     def addCube(self):
         tail = self.body[-1]
         dx, dy = tail.dirnx, tail.dirny
@@ -134,6 +158,12 @@ def random_blanket(snake):
         else:
             break
     return (x, y)
+
+def reset_game():
+    global s, blanket
+    s = snake((0, 0, 0), (10, 10))
+    blanket = Cube(random_blanket(s), color=(0, 255, 0))
+    s.reset((10, 10))
 
 def main():
     global size, rows, s, blanket
