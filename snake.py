@@ -5,13 +5,19 @@ import tkinter as tk;
 from tkinter import messagebox;
 
 
+fac_img = pygame.image.load('fughed.png')
+fac_img = pygame.transform.scale(fac_img, (48, 48))
+blank_img = pygame.image.load('koc.png')
+blank_img = pygame.transform.scale(blank_img, (48, 48))
+
 class Cube(object):
     rows = 20
-    def __init__(self, start, dirnx=1, dirny=0, color=(255, 0, 0)):
+    def __init__(self, start, dirnx=1, dirny=0, color=(141, 126, 166), blank=False):
         self.pos = start
         self.dirnx = dirnx
         self.dirny = dirny
         self.color = color
+        self.blank = blank
     def move(self, dirnx, dirny):
         self.dirnx = dirnx
         self.dirny = dirny
@@ -20,14 +26,12 @@ class Cube(object):
         dis = size // rows
         rw = self.pos[0]
         cm = self.pos[1]
-        pygame.draw.rect(surface, self.color, (rw*dis+1, cm*dis+1, dis-2, dis-2))
-        if eyes:
-            center = dis // 2
-            radius = 3
-            circleMiddle = (rw*dis+center-radius, cm*dis+8)
-            circleMiddle2 = (rw*dis + dis - radius*2, cm*dis+8)
-            pygame.draw.circle(surface, (100, 100, 255), circleMiddle, radius)
-            pygame.draw.circle(surface, (100, 100, 255), circleMiddle2, radius)
+        if self.blank:
+            surface.blit(blank_img, (rw * dis, cm * dis))
+        elif eyes:
+            surface.blit(fac_img, (rw * dis, cm * dis))
+        else:
+            pygame.draw.rect(surface, self.color, (rw*dis+1, cm*dis+1, dis-2, dis-2))
 
 class snake(object):
     body = []
@@ -162,17 +166,26 @@ def random_blanket(snake):
 def reset_game():
     global s, blanket
     s = snake((0, 0, 0), (10, 10))
-    blanket = Cube(random_blanket(s), color=(0, 255, 0))
+    blanket = Cube(random_blanket(s), blank=True)
     s.reset((10, 10))
+
+def show_splash_screen(window):
+    splash_image = pygame.image.load('spla.png')
+    splash_image = pygame.transform.scale(splash_image, (1000, 1000))
+    window.blit(splash_image, (0, 0))
+    pygame.display.update()
+    pygame.time.delay(3000)
 
 def main():
     global size, rows, s, blanket
-    size = 500
+    size = 1000
     rows = 20
     window = pygame.display.set_mode((size, size))
 
+    show_splash_screen(window)
+
     s = snake((0, 0, 0), (10, 10))
-    blanket = Cube(random_blanket(s), color=(0, 255, 0))
+    blanket = Cube(random_blanket(s), blank=True)
 
     flag = True
     clock = pygame.time.Clock()
@@ -184,7 +197,7 @@ def main():
         s.move()
         if s.body[0].pos == blanket.pos:
             s.addCube()
-            blanket = Cube(random_blanket(s), color=(0, 255, 0))
+            blanket = Cube(random_blanket(s), blank=True)
         draw_window(window)
 
 main()
