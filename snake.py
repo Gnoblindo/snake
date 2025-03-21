@@ -12,7 +12,7 @@ blank_img = pygame.transform.scale(blank_img, (48, 48))
 
 class Cube(object):
     rows = 20
-    def __init__(self, start, dirnx=1, dirny=0, color=(141, 126, 166), blank=False):
+    def __init__(self, start, dirnx=1, dirny=0, color=(132, 122, 159), blank=False):
         self.pos = start
         self.dirnx = dirnx
         self.dirny = dirny
