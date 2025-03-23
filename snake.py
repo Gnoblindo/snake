@@ -1,9 +1,7 @@
-import math;
-import random;
+import random
+from tkinter import messagebox
 import pygame;
 import tkinter as tk;
-from tkinter import messagebox;
-
 
 fac_img = pygame.image.load('fughed.png')
 fac_img = pygame.transform.scale(fac_img, (48, 48))
@@ -33,7 +31,7 @@ class Cube(object):
         else:
             pygame.draw.rect(surface, self.color, (rw*dis+1, cm*dis+1, dis-2, dis-2))
 
-class snake(object):
+class Snake(object):
     body = []
     turns = {}
     def __init__(self, color, pos):
@@ -98,9 +96,16 @@ class snake(object):
     def game_over(self, przyczyna):
         root = tk.Tk()
         root.withdraw()
-        messagebox.showinfo("Fulgrim poszedł spać", "Fulgrim poszedł spać " + przyczyna + "\nZdobyte kocyki: " + str(len(self.body)-1))
-        root.destroy()
-        reset_game()
+        odpowiedz = messagebox.askyesno(
+            "Fulgrim poszedł spać", 
+            "Fulgrim poszedł spać " + przyczyna + "\nZdobyte kocyki: " + str(len(self.body)-1) + "\nCzy chcesz zagrać jeszcze raz?"
+            )
+        
+        if odpowiedz == True:
+            root.destroy()
+            reset_game()
+        else:
+            pygame.quit()
 
     def reset(self, pos):
         self.body = []
@@ -165,7 +170,7 @@ def random_blanket(snake):
 
 def reset_game():
     global s, blanket
-    s = snake((0, 0, 0), (10, 10))
+    s = Snake((0, 0, 0), (10, 10))
     blanket = Cube(random_blanket(s), blank=True)
     s.reset((10, 10))
 
@@ -182,9 +187,10 @@ def main():
     rows = 20
     window = pygame.display.set_mode((size, size))
 
+    pygame.display.set_caption('Fugim the snake')
     show_splash_screen(window)
 
-    s = snake((0, 0, 0), (10, 10))
+    s = Snake((0, 0, 0), (10, 10))
     blanket = Cube(random_blanket(s), blank=True)
 
     flag = True
