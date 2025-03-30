@@ -32,6 +32,7 @@ class Cube(object):
             pygame.draw.rect(surface, self.color, (rw*dis+1, cm*dis+1, dis-2, dis-2))
 
 class Snake(object):
+    end_game = False
     body = []
     turns = {}
     def __init__(self, color, pos):
@@ -105,7 +106,7 @@ class Snake(object):
             root.destroy()
             reset_game()
         else:
-            pygame.quit()
+            self.end_game = True
 
     def reset(self, pos):
         self.body = []
@@ -204,6 +205,10 @@ def main():
         if s.body[0].pos == blanket.pos:
             s.addCube()
             blanket = Cube(random_blanket(s), blank=True)
-        draw_window(window)
+        if s.end_game == True:
+            pygame.quit()
+            return
+        else:
+            draw_window(window)
 
 main()
